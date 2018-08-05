@@ -8,7 +8,13 @@ public class Analyst {
 
     private HashMap<String, PairEXMO> samePairsEXMO = new HashMap<String, PairEXMO>();
     private HashMap<String, PairBITFINEX> samePairsBITFINEX = new HashMap<String, PairBITFINEX>();
-    private HashMap<String, Double> resultMap = new HashMap<String, Double>();
+    private HashMap<String, Double> sameMapEXMO = new HashMap<String, Double>();
+
+    public HashMap<String, Double> getSameMapBITFINEX() {
+        return sameMapBITFINEX;
+    }
+
+    private HashMap<String, Double> sameMapBITFINEX = new HashMap<String, Double>();
     private HashMap<String, PairEXMO> resultPairsEXMO = new HashMap<String, PairEXMO>();
     private HashMap<String, PairBITFINEX> resultPairsBITFINEX = new HashMap<String, PairBITFINEX>();
 
@@ -21,8 +27,8 @@ public class Analyst {
         return samePairsBITFINEX;
     }
 
-    public HashMap<String, Double> getResultMap() {
-        return resultMap;
+    public HashMap<String, Double> getSameMapEXMO() {
+        return sameMapEXMO;
     }
 
     public HashMap<String, PairEXMO> getResultPairsEXMO() {
@@ -57,8 +63,9 @@ public class Analyst {
                     > onePercentDifference) {
                 resultPairsEXMO.put(key, entry.getValue());// финальный map пар с EXMO
                 resultPairsBITFINEX.put(key, samePairsBITFINEX.get(key));// финальный map пар с BITFINEX
-                resultMap.put(key, bitfinexMid);//финальный map (пара, цена)
             }
+            sameMapEXMO.put(key, exmoMid);//финальный map (пара, цена)
+            sameMapBITFINEX.put(key, bitfinexMid);
         }
     }
 }
