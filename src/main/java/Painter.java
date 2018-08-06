@@ -32,6 +32,7 @@ public class Painter extends Application {
     HashMap<String, Double> lastPairsEXMO = new HashMap<>();
 
     HashMap<String, ObservableList<XYChart.Data<String, Double>>> historyEXMO = new HashMap<>();
+    HashMap<String, ObservableList<XYChart.Data<String, Double>>> historyBITFINEX = new HashMap<>();
 
     public void setPairsBITFINEX(HashMap<String, Double> pairsBITFINEX) {
         this.pairsBITFINEX = pairsBITFINEX;
@@ -59,14 +60,32 @@ public class Painter extends Application {
     private int lastObservedSize;
 
 
-    private void updateMaps(String strDate) {
-        for (Map.Entry<String, Double> entry : pairsEXMO.entrySet()) {
+    private void updateMaps(String strDate, boolean isFullEXMO) {
+        HashMap<String, Double> mapBuf = new HashMap<>();
+        HashMap<String, ObservableList<XYChart.Data<String, Double>>> historyBuf = new HashMap<>();
+        if (!isFullEXMO) {
+            mapBuf = pairsEXMO;
+            historyBuf = historyEXMO;
+        } else {
+            mapBuf = pairsBITFINEX;
+            historyBuf = historyBITFINEX;
+        }
+        for (Map.Entry<String, Double> entry : mapBuf.entrySet()) {
             ObservableList<XYChart.Data<String, Double>> listBuf = FXCollections.observableArrayList();
-            if (historyEXMO.get(entry.getKey()) != null) {
-                listBuf = historyEXMO.get(entry.getKey());
+            if (historyBuf.get(entry.getKey()) != null) {
+                listBuf = historyBuf.get(entry.getKey());
             }
             listBuf.add(new XYChart.Data<>(strDate, entry.getValue()));
-            historyEXMO.put(entry.getKey(), listBuf);
+            historyBuf.put(entry.getKey(), listBuf);
+        }
+
+        if (!isFullEXMO) {
+            pairsEXMO = mapBuf;
+            historyEXMO = historyBuf;
+            updateMaps(strDate, true);
+        } else  {
+            pairsBITFINEX = mapBuf;
+            historyBITFINEX = historyBuf;
         }
     }
 
@@ -119,7 +138,7 @@ public class Painter extends Application {
 
                     try {
                         System.out.println("oldinfo");
-                        Thread.sleep(5000);
+                        Thread.sleep(10000);
                     } catch (InterruptedException iex) {
                         Thread.currentThread().interrupt();
                     }
@@ -135,10 +154,11 @@ public class Painter extends Application {
             public void changed(ObservableValue<? extends Date> observableValue, Date oldDate, Date newDate) {
 
                 String strDate = dateFormat.format(newDate);
+                lineChart.setTitle(comboBox.getValue().toString());
                 myXaxisCategories.add(strDate);
 
                 System.out.println("value: " + comboBox.getValue());
-                updateMaps(strDate);//
+                updateMaps(strDate, false);//
                 Iterator<XYChart.Data<String, Double>> iterator = xyList1.iterator();//TODO ценнейшая информация
                 while (iterator.hasNext()) {
                     System.out.println("iter " + iterator.next().getXValue());
@@ -146,8 +166,7 @@ public class Painter extends Application {
                 xyList1.add(new XYChart.Data<>(strDate, pairsEXMO.get(comboBox.getValue().toString())));
                 System.out.println("xylist " + xyList1.size());
                 xyList2.add(new XYChart.Data<>(strDate, pairsBITFINEX.get(comboBox.getValue().toString())));
-                if (xyList1.size() - lastObservedSize > 10) {
-                    //lastObservedSize = 1;
+                if (xyList1.size() > 10) {
                     xAxis.getCategories().remove(0);
                     xyList1.remove(0);
                     xyList2.remove(0);
@@ -161,8 +180,18 @@ public class Painter extends Application {
             if (i > 0) {
                 xyList1.remove(0, xyList1.size());
                 xyList1.addAll(historyEXMO.get(comboBox.getValue().toString()));
-                System.out.println("change " + xyList1.size() + newValue);
+                xyList2.remove(0, xyList2.size());
+                xyList2.addAll(historyBITFINEX.get(comboBox.getValue().toString()));
+                if (xyList1.size() > 10) {
+                    //xAxis.getCategories().remove(0);
+                    xyList1.remove(0, xyList1.size() - 10);
+                    xyList2.remove(0, xyList2.size() - 10);
+                }
+                yAxis.setForceZeroInRange(false);
                 lineChart.setTitle(comboBox.getValue().toString());
+                //lineChart.setLegendVisible(false);
+                System.out.println("change " + xyList1.size() + newValue);
+
             }
         });
 

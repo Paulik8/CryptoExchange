@@ -44,7 +44,7 @@ public class Coordinator {
         //painter.setVisible(true);
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask(this);
-        timer.schedule(timerTask, 5000, 5000);
+        timer.schedule(timerTask, 10000, 10000);
 
 
 
