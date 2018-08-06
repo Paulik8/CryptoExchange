@@ -6,17 +6,17 @@ import java.util.Map;
 
 public class Analyst {
 
-    private HashMap<String, PairEXMO> samePairsEXMO = new HashMap<String, PairEXMO>();
-    private HashMap<String, PairBITFINEX> samePairsBITFINEX = new HashMap<String, PairBITFINEX>();
-    private HashMap<String, Double> sameMapEXMO = new HashMap<String, Double>();
+    private HashMap<String, PairEXMO> samePairsEXMO = new HashMap<>();
+    private HashMap<String, PairBITFINEX> samePairsBITFINEX = new HashMap<>();
+    private HashMap<String, Double> sameMapEXMO = new HashMap<>();
 
     public HashMap<String, Double> getSameMapBITFINEX() {
         return sameMapBITFINEX;
     }
 
-    private HashMap<String, Double> sameMapBITFINEX = new HashMap<String, Double>();
-    private HashMap<String, PairEXMO> resultPairsEXMO = new HashMap<String, PairEXMO>();
-    private HashMap<String, PairBITFINEX> resultPairsBITFINEX = new HashMap<String, PairBITFINEX>();
+    private HashMap<String, Double> sameMapBITFINEX = new HashMap<>();
+    private HashMap<String, PairEXMO> resultPairsEXMO = new HashMap<>();
+    private HashMap<String, PairBITFINEX> resultPairsBITFINEX = new HashMap<>();
 
 
     public HashMap<String, PairEXMO> getSamePairsEXMO() {
@@ -55,10 +55,14 @@ public class Analyst {
         for (Map.Entry<String, PairEXMO> entry : samePairsEXMO.entrySet()) {
 
             String key = entry.getKey();
+
             Double exmoMid = (Double.parseDouble(entry.getValue().getBuyPrice())
                     + Double.parseDouble(entry.getValue().getSellPrice())) / 2;
+
             Double onePercentDifference = exmoMid * 0.01;
+
             Double bitfinexMid = Double.parseDouble(samePairsBITFINEX.get(key).getMid());
+
             if (Math.abs(bitfinexMid - exmoMid)
                     > onePercentDifference) {
                 resultPairsEXMO.put(key, entry.getValue());// финальный map пар с EXMO

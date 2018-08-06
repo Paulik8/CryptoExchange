@@ -2,7 +2,6 @@ import constants.URL;
 import models.ComplexValue;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Timer;
 
 public class Coordinator {
@@ -15,15 +14,8 @@ public class Coordinator {
     private ComplexValue complexValue = new ComplexValue();
     private Analyst analyst;
 
-    public Thread getThreadEXMO() {
-        return threadEXMO;
-    }
-
-    public Thread getThreadBITFINEX() {
-        return threadBITFINEX;
-    }
-
     public void run(Painter painter) {
+
         this.painter = painter;
 
         initThreads();
@@ -33,22 +25,13 @@ public class Coordinator {
         analyst = new Analyst();
         analyzePairs();
 
-        System.out.println("exmoSize: " + analyst.getSamePairsEXMO().size());
-        System.out.println("bitfinexSize: " + analyst.getSamePairsBITFINEX().size());
-        System.out.println("resultSize: " + analyst.getSameMapEXMO().size());
-
         this.painter.setPairsEXMO(analyst.getSameMapEXMO());
-        System.out.println("setter");
         this.painter.setPairsBITFINEX(analyst.getSameMapBITFINEX());
 
-        //painter.setVisible(true);
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask(this);
         timer.schedule(timerTask, 10000, 10000);
 
-
-
-        //Application.launch(painter.getClass(), "");
     }
 
     private void analyzePairs() {
@@ -104,9 +87,5 @@ public class Coordinator {
 
         painter.setPairsEXMO(analyst.getSameMapEXMO());
         painter.setPairsBITFINEX(analyst.getSameMapBITFINEX());
-
-        System.out.println("exmoSize1: " + analyst.getSamePairsEXMO().size());
-        System.out.println("bitfinexSize: " + analyst.getSamePairsBITFINEX().size());
-        System.out.println("resultSize: " + analyst.getSameMapEXMO().size());
     }
 }

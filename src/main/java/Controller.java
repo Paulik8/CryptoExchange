@@ -34,25 +34,26 @@ public class Controller {
     }
 
     public ComplexValue run () throws IOException {
+
         complexValue = new ComplexValue();
         String result = requestToApi();
         changeToModel(result);
-        //System.out.println("pairList: " + pairListEXMO.getListPair().get("BTCEUR").getBuyPrice());
-//        if (isEXMO)
-//            complexValue.setPairList(pairListEXMO);
-//        if (isBITFINEX)
-//            complexValue.setPairList(pairListEXMO);//TODO change
+
         return complexValue;
     }
 
     private void changeToModel(String result) {
+
         if (isEXMO) {
+
             builder.registerTypeAdapter(PairListEXMO.class, new DeserializerEXMO());
             Gson gson = builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
             PairListEXMO pairListEXMO = gson.fromJson(result, PairListEXMO.class);
             complexValue.setPairListEXMO(pairListEXMO);
         }
+
         if (isBITFINEX) {
+
             builder.registerTypeAdapter(PairListBITFINEX.class, new DeserializerBITFINEX());
             Gson gson = builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
             PairListBITFINEX pairListBITFINEX = gson.fromJson(result, PairListBITFINEX.class);
@@ -61,11 +62,13 @@ public class Controller {
     }
 
     private String requestToApi() throws IOException {
+
         try {
             url = new URL(urlAddress);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
         StringBuilder response = new StringBuilder();
